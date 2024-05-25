@@ -1,8 +1,8 @@
-CFLAGS=-Wall -Wextra -std=c11 -pedantic -ggdb 
+CFLAGS=-Wall -Wextra  -pedantic -ggdb 
 CC=gcc 
-CLIBS=vector.c
+CLIBS=vector.c ask.c
 
 askfm:
-	$(CC) $(CFLAGS) main.c -o askfm  $(CLIBS)
+	$(CC) $(CFLAGS)  main.c -o askfm  $(CLIBS)
 clean: 
 	rm -rf askfm 

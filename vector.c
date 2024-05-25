@@ -8,12 +8,12 @@
 void vector_init(vector *v){
     v->size = 0;
     v->capacity = CAP_INIT; 
-    v->items = malloc(sizeof(void *) * v->capacity);
+    v->items = malloc(sizeof(char **) * v->capacity);
 } 
 
 void resize_vector(vector *v,int capacity){
     capacity *= 2;
-    void **items = (void *) realloc(v->items, sizeof(void *) * capacity);
+    char **items = (char **) realloc(v->items, sizeof(char *) * capacity);
     
     if(v->items == NULL){
         printf("ERROR: null pointer in resize_vector realloc()!\n");
@@ -27,17 +27,17 @@ void resize_vector(vector *v,int capacity){
 
 }
 
-void push_back(vector *v, void* str){
+void push_back(vector *v, char* str){
     int size = get_size(v);
     int capa = get_capacity(v);
     if(size == capa){
         resize_vector(v,capa);
-        v->items[v->size++] = str;
-        return; 
+        v->items[v->size++] = strdup(str);
     }
-    v->items[v->size++] = str; 
+    v->items[v->size++] = strdup(str);
 }
-void push_front(vector *v, void* str){
+
+void push_front(vector *v, char* str){
     int s,c; 
     s = get_size(v);
     c = get_capacity(v);
@@ -45,15 +45,15 @@ void push_front(vector *v, void* str){
     if(s == c){
         resize_vector(v,c);
         shift_left(v);
-        v->items[0] = str;
+        v->items[0] = strdup(str);
         v->size++;
         return; 
     }
     shift_left(v);
-    v->items[0] = str;
+    v->items[0] = strdup(str);
     v->size++;
 }
-void set_at(vector *v, int idx, void* item){ 
+void set_at(vector *v, int idx, char* item){ 
     if(idx < 0 || idx > get_size(v)){
         printf("ERROR: Invalid index\n");
         exit(EXIT_FAILURE);
@@ -80,8 +80,8 @@ void vector_free(vector *v){
 void print_vector(vector *v){
     int size = get_size(v); 
     for(int i=0;i < size;++i){
-        printf("item[%d]=%s\n",i+1,(char*)v->items[i]);
-    } 
+        printf("item[%d]=%s\n",i+1,v->items[i]);
+    }
     printf("\n");
 }
 void shift_left(vector* v){
