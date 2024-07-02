@@ -58,7 +58,7 @@ void load_users(vector *users,vector *lines, vector*splited_string)
     vec_init(lines,CAPACITY);
     vec_init(splited_string,CAPACITY);
 
-    read_from_file("users.txt", lines);
+    read_from_file("databases/users.txt", lines);
     user* new_user;
     for(size_t i = 0; i < lines->size; ++i){
         new_user = malloc(sizeof(user));

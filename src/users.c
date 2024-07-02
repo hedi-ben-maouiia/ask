@@ -129,7 +129,7 @@ int used_user_name(char* u,vector*users)
 }
 
 void update_users(user* user){
-    FILE* file = fopen("users.txt","a");
+    FILE* file = fopen("databases/users.txt","a");
     if(NULL == file){
         fprintf(stderr,"Cannot open file to write\n");
         exit(1);
