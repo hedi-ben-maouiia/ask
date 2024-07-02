@@ -17,8 +17,8 @@ typedef struct {
 } user;
 
 
-void    login(user* cur_user, vector* users);
-void    sign_up(user* cur_user,vector* users, vector* usInfo);
+void    login(user* cur_user, vector* users,vector*lines,vector*splited_line);
+void    sign_up(user* cur_user,vector* users,vector*lines,vector* splited_line);
 char*   user_to_string(user *user);
 void    user_init(user* user,vector *v);
 void    print_user(user *user);

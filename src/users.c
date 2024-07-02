@@ -3,14 +3,14 @@
 #include <stdlib.h>
 
 
-
+int loaded(vector* users){
+    return (users->size > 0) ? 1 : 0;
+}
 
 void clean_buffer(void)
 {
     int c ;
-    while((c = getchar()) != '\n' && c != EOF){
-        // Discard caracters until new line or end of file
-    }
+    while((c = getchar()) != '\n' && c != EOF){}
 }
 void check_get_line(int a,void* p)
 {
@@ -32,11 +32,11 @@ int get_id(user* last_user){
     int id = last_user->user_id;
     return id;
 }
-void sign_up(user* cur_user,vector* users, vector* usInfo)
-{
+void sign_up(user* cur_user,vector* users, vector* lines,vector* splited_string)
+{ 
     int id;
     size_t buffer_size = 50;
-    char* is_an =   malloc(sizeof(char) * buffer_size);
+    char* is_an    = malloc(sizeof(char) * buffer_size);
     char* name     = malloc(sizeof(char) * buffer_size);
     char* username = malloc(sizeof(char) * buffer_size);
     char* pass     = malloc(sizeof(char) * buffer_size);
@@ -59,26 +59,24 @@ void sign_up(user* cur_user,vector* users, vector* usInfo)
     input(pass,&buffer_size);
     printf("\nDo you allow AQ!: enter 1 for yes or -1 for no: "); 
     input(is_an,&buffer_size);
+
     if(users->size == 0)
         id = 0;
     else 
         id = get_id(users->users[users->size-1]);
     ++id; 
     
-    append(usInfo, to_str(&id)); 
-    append(usInfo, strdup(is_an)); 
-    append(usInfo, strdup(username)); 
-    append(usInfo, strdup(name)); 
-    append(usInfo, strdup(email)); 
-    append(usInfo, strdup(pass)); 
-      
-    user_init(cur_user, usInfo);
+    append(splited_string, to_str(&id)); 
+    append(splited_string, strdup(is_an)); 
+    append(splited_string, strdup(username)); 
+    append(splited_string, strdup(name)); 
+    append(splited_string, strdup(email)); 
+    append(splited_string, strdup(pass));  
 
-    update_users(cur_user);
+    user_init(cur_user, splited_string);    
     
-    append(users,cur_user);
-
-    empty_vec(usInfo); 
+    update_users(cur_user); 
+    load_users(users,lines,splited_string); 
 
     free(is_an); 
     free(username);
@@ -86,35 +84,36 @@ void sign_up(user* cur_user,vector* users, vector* usInfo)
     free(email);
     free(pass);
 }
+
 int user_exist(const char* user_name, const char* pass,vector* users,user *cur)
 {
     for(size_t i=0;i < users->size;++i){
         user* cur_user = users->users[i];
         if(strcmp(user_name,cur_user->user_name) == 0){
             if(strcmp(pass,cur_user->password) == 0){
-                cur = cur_user;
+                *cur = *cur_user;
                 return 1;
             }
         }
     }
     return 0;
 }
-void login(user* cur_user, vector* users)
+void login(user* cur_user, vector* users, vector* lines, vector* splited_string)
 {
+    load_users(users, lines,splited_string);
     size_t buffersize = 50;
-    char* user_name = malloc(sizeof(char) * buffersize);
-    char* pass      = malloc(sizeof(char) * buffersize);
+    char user_name[buffersize];
+    char pass[buffersize];
     clean_buffer();
     printf("Enter you user_name: ");
     input(user_name,&buffersize);
     printf("Enter you password: ");    
     input(pass,&buffersize); 
-    
+       
     if(!user_exist(user_name,pass, users, cur_user)){
-        printf("Wrong user_name or password! pleas try again"); 
-        login(cur_user,users);
-    }
-
+        printf("Wrong user_name or password! pleas try again");
+        login(cur_user,users,lines,splited_string);
+    }    
 }
 
 int used_user_name(char* u,vector*users)
@@ -136,11 +135,12 @@ void update_users(user* user){
         exit(1);
     }
     write_to_file(file,"%d,%d,%s,%s,%s,%s\n",user->user_id,
-                                           user->is_anonymous,
-                                           user->user_name,
-                                           user->name,
-                                           user->email,
-                                           user->password);
+                                             user->is_anonymous,
+                                             user->user_name,
+                                             user->name,
+                                             user->email,
+                                             user->password);
+    fclose(file);
 }
 void user_init(user* user, vector *v)
 {
@@ -154,7 +154,7 @@ void user_init(user* user, vector *v)
 
 void print_user(user *user)
 {
-    printf("User ID[%zu]\tUserName:%20s\tEmail:%20s\tName:%s\tAQ!:", user->user_id, user->user_name,user->email,user->name);
+    printf("User ID[%zu]\tUser Name:%20s\tEmail:%20s\tName: %s\tAQ!: ", user->user_id, user->user_name,user->email,user->name);
     if(user->is_anonymous == -1)
          printf("No");
     else 

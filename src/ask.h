@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-#define CAPACITY 1
+#define CAPACITY 20
 
 
 typedef struct {

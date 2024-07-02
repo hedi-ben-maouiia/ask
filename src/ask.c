@@ -28,37 +28,45 @@ void append(vector *vec,void *user)
 }
 
 void vec_init(vector* vec, size_t cap)
-{    
+{   
     vec->users      = malloc(sizeof(void*) * cap);
     check_malloc_fail(vec->users);
     
     vec->capacity   = CAPACITY;
     vec->size       = 0;
 }
+
 void free_vec(vector* v)
 {
     for(size_t i=0; i < v->size; ++i)
-    {
         free(v->users[i]);
-    }
     free(v->users);
 }
-void empty_vec(vector* vec)
-{
-    vec->size = 0; 
+void empty_vec(vector* v){
+    v->size = 0;
+    v->capacity = CAPACITY;
 }
 
 void load_users(vector *users,vector *lines, vector*splited_string)
 {
+    
+    free_vec(users);
+    free_vec(lines);
+    free_vec(splited_string);
+
+    vec_init(users,CAPACITY);
+    vec_init(lines,CAPACITY);
+    vec_init(splited_string,CAPACITY);
+
     read_from_file("users.txt", lines);
-    user* curr_user;
+    user* new_user;
     for(size_t i = 0; i < lines->size; ++i){
-        curr_user = malloc(sizeof(user));
-        check_malloc_fail(curr_user);
+        new_user = malloc(sizeof(user));
+        check_malloc_fail(new_user);
         split_string(lines->users[i],",",splited_string);        
-        user_init(curr_user,splited_string);
+        user_init(new_user,splited_string);
         empty_vec(splited_string);
-        append(users,(void*)curr_user);
+        append(users,(void*)new_user);
     }
 }
 

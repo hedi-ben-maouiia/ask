@@ -10,4 +10,4 @@ run:
 gdb:
 	gdb ./ask 
 val:
-	valgrind ./ask
+	valgrind --leak-check=full ./ask
