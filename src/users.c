@@ -32,7 +32,11 @@ int get_id(user* last_user){
     int id = last_user->user_id;
     return id;
 }
-void sign_up(user* cur_user,vector* users, vector* lines,vector* splited_string)
+void sign_up(user* cur_user, vector *users, 
+             vector *questions, 
+             vector *users_line,
+             vector *questions_line,
+             vector* splited_string)
 { 
     int id;
     size_t buffer_size = 50;
@@ -76,7 +80,7 @@ void sign_up(user* cur_user,vector* users, vector* lines,vector* splited_string)
     user_init(cur_user, splited_string);    
     
     update_users(cur_user); 
-    load_users(users,lines,splited_string); 
+    load_data(users,questions,questions_line,users_line,splited_string); 
 
     free(is_an); 
     free(username);
@@ -84,7 +88,16 @@ void sign_up(user* cur_user,vector* users, vector* lines,vector* splited_string)
     free(email);
     free(pass);
 }
-
+int find_user_id(int id,vector *users)
+{
+    for(size_t i = 0; i < users->size;++i){
+        user* cur_user = users->users[i];
+        int cur_id = cur_user->user_id;
+        if(cur_id == id)
+            return cur_user->is_anonymous;
+    }
+    return 0;
+}
 int user_exist(const char* user_name, const char* pass,vector* users,user *cur)
 {
     for(size_t i=0;i < users->size;++i){
@@ -98,9 +111,14 @@ int user_exist(const char* user_name, const char* pass,vector* users,user *cur)
     }
     return 0;
 }
-void login(user* cur_user, vector* users, vector* lines, vector* splited_string)
+void login(user* cur_user,
+           vector* users,
+           vector* questions,
+           vector* users_line,
+           vector* questions_line,
+           vector* splited_string)
 {
-    load_users(users, lines,splited_string);
+    load_data(users,questions,users_line,questions_line,splited_string);
     size_t buffersize = 50;
     char user_name[buffersize];
     char pass[buffersize];
@@ -111,8 +129,8 @@ void login(user* cur_user, vector* users, vector* lines, vector* splited_string)
     input(pass,&buffersize); 
        
     if(!user_exist(user_name,pass, users, cur_user)){
-        printf("Wrong user_name or password! pleas try again");
-        login(cur_user,users,lines,splited_string);
+        printf("Wrong user_name or password! pleas try again\n");
+        login(cur_user,users,questions,users_line,questions_line,splited_string);
     }    
 }
 

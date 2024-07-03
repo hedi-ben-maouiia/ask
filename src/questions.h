@@ -1,20 +1,21 @@
 #ifndef QUESTION_H
 #define QUESTION_H 
-#include "ask.h"
 
 
 typedef struct {
-
     int question_id;
     int from_user_id;
     int to_user_id;
     int is_thread;
     char* questino_text;
     char* answer;
-
 } question;
 
-void print_question(question* q);
+#include "ask.h"
 
+void question_init(question* q,vector* splited_line);
+void print_question(question* q);
+void update_questions(question *q);
+void rewrite_question_to_data_base(vector* questions);
 
 #endif  // QUESTION_H

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include "ask.h"
 
 
 typedef struct {
@@ -17,8 +16,20 @@ typedef struct {
 } user;
 
 
-void    login(user* cur_user, vector* users,vector*lines,vector*splited_line);
-void    sign_up(user* cur_user,vector* users,vector*lines,vector* splited_line);
+#include "ask.h"
+
+void sign_up(user* cur_user,
+             vector *users,
+             vector *questions,
+             vector *users_line,
+             vector *questions_line,
+             vector* splited_string);
+void login(user* cur_user,
+           vector* users,
+           vector* questions,
+           vector* users_line,
+           vector* questions_line,
+           vector* splited_string);
 char*   user_to_string(user *user);
 void    user_init(user* user,vector *v);
 void    print_user(user *user);
@@ -27,6 +38,9 @@ char*   get_user_name(user *user);
 char*   get_user_pass(user *user);
 void    update_users(user* user);
 int     used_user_name(char* u,vector*users);
+int     find_user_id(int id,vector *users);
+void    input(char* data,size_t *size);
+void    clean_buffer(void);
 
 
 #endif  // USERS_H
