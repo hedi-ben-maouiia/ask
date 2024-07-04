@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void check_malloc_fail(void *p)
 {
     if(p == NULL)
@@ -96,8 +97,11 @@ void print_users(vector*users)
 }
 void print_questions(vector* questions)
 {
-    for(size_t i = 0; i < questions->size;++i)
-        print_question(questions->users[i]);
+    for(size_t i = 0; i < questions->size;++i){
+        question *q = questions->users[i];
+        if(q->is_thread == -1)
+            print_question(q,questions);
+    }
 }
 
 int get_question_id(question *last_question)
@@ -114,13 +118,13 @@ void ask_question(user *cur_user,vector* users,vector *questions){
         return;
     
     if(find_user_id(to_user_id,users) == 1)
-        printf("This user allow for anonymos questions.\n");
+        printf("This user allow anonymos questions.\n");
     else 
-        printf("This user does not allow for anonymos questinos!\n");
+        printf("This user does not allow anonymos questinos.\n");
 
     new_question = malloc(sizeof(question));
     new_question->to_user_id = to_user_id; 
-    printf("For thread question enter the question id or -1 for new question: ");
+    printf("For thread question enter the question ID or -1 for new question: ");
     int is_thread = 0;
     scanf("%d",&is_thread);
     
@@ -162,6 +166,8 @@ int hase_answer(vector* questions,int *id)
     }
     return -1;
 }
+
+
 void answer_question(user *cur_user,vector *questions)
 {
     int id = 0;
@@ -208,7 +214,29 @@ void answer_question(user *cur_user,vector *questions)
         return;
     }
 }
-
+void print_from(user *cur_user,vector* questions)
+{
+   int no_question_from_me = 1;
+   for(size_t i = 0; i < questions->size;++i){
+        question *q = questions->users[i];
+        if(q->from_user_id == cur_user->user_id)
+        {
+            no_question_from_me = 0;
+            print_question(q,questions);
+        }
+    }
+    if(no_question_from_me)
+        printf("You don't have any questions from you!:(\n");
+}
+void show_quesion_for_me(user *cur_user,vector *users,
+               vector *questions,
+               vector *users_line,
+               vector *questions_line,
+               vector *splited_string)
+{
+    load_data(users,questions,users_line,questions_line,splited_string);
+    print_from(cur_user,questions);
+}
 void show_feed(vector *users,
                vector *questions,
                vector *users_line,
@@ -216,10 +244,8 @@ void show_feed(vector *users,
                vector *splited_string)
 {
     load_data(users,questions,users_line,questions_line,splited_string);
-    for(size_t i=0; i < questions->size;++i){
-        question* q = questions->users[i];
-        print_question(q);
-    }
+    print_questions(questions);
 }
+
 
 
