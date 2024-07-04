@@ -47,10 +47,11 @@ void ask_system(user* cur_user,
     access_system(cur_user,users,questions,users_line,questions_line,splited_line);
    
     
-    append(menu,"View Question To You!");
-    append(menu,"View Question From You!");
-    append(menu,"Ask a Question!");
-    append(menu,"Answer a Question!");
+    append(menu,"View Question To You");
+    append(menu,"View Question From You");
+    append(menu,"Ask a Question");
+    append(menu,"Answer a Question");
+    append(menu,"Delete a Question");
     append(menu,"View All Users");
     append(menu,"Show Feed");
     append(menu,"Logout.");
@@ -62,6 +63,7 @@ void ask_system(user* cur_user,
             case 1:
                 break;
             case 2:
+                show_quesion_for_me(cur_user, users,questions,users_line,questions_line,splited_line);
                 break;
             case 3:
                 ask_question(cur_user,users,questions);
@@ -70,12 +72,14 @@ void ask_system(user* cur_user,
                 answer_question(cur_user,questions);
                 break;
             case 5:
+                
+            case 6:
                 print_users(users);
                 break;
-            case 6:
+            case 7:
                 show_feed(users,questions, users_line, questions_line, splited_line); 
                 break;
-            case 7:
+            case 8:
                 ask_system(cur_user, users, questions,users_line,questions_line,splited_line);
         }
     }

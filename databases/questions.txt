@@ -2,3 +2,5 @@
 135,60,50,134,wie geht's dir?, 
 136,60,50,135,what better c or C++?,i think c is better:)
 137,50,60,-1,what is your name ?, 
+144,60,50,134,any advice?,
+145,34,59,-1,Are you okey?, 

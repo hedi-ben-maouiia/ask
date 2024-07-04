@@ -7,23 +7,24 @@ Ask.Fm it's a Files based console application that emulate the ask.fm website it
 
 The project is not yet completed :)  
 
-- User can SignUp. 
 - User can Login.
-- View all the users in the system's.
-
-### TODO Features 
-
+- User can SignUp. 
 - View Questions that you ask to other.
-- View Questions that other asked you.
+- View all the users in the system's.
 - Answer Questions.
 - Show Feed.
+
+### TODO Features 
+- Ask anonymous questions.
+- View Questions that other asked you.
 
 ## How to use ? 
 
 - Linux :
-    `cd /path/to/soruce_code`
-    `make build`
-    `make run`
+    `cd /path/to/soruce_code
+    make build
+    make run 
+    `
     `
     
 
