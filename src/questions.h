@@ -14,7 +14,7 @@ typedef struct {
 #include "ask.h"
 
 void question_init(question* q,vector* splited_line);
-void print_question(question* q);
+void print_question(question* q,vector* questions);
 void update_questions(question *q);
 void rewrite_question_to_data_base(vector* questions);
 
