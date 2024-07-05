@@ -88,12 +88,11 @@ void sign_up(user* cur_user, vector *users,
     free(email);
     free(pass);
 }
-int find_user_id(int id,vector *users)
+int allow_anonymous(int id,vector *users)
 {
     for(size_t i = 0; i < users->size;++i){
         user* cur_user = users->users[i];
-        int cur_id = cur_user->user_id;
-        if(cur_id == id)
+        if(cur_user->user_id == (size_t)id)
             return cur_user->is_anonymous;
     }
     return 0;
@@ -185,9 +184,15 @@ size_t  get_user_id(user *user)
     return user->user_id;
 }
 
-char*   get_user_name(user *user)
+char*   get_user_name(vector *users,int id)
 {
-    return user->user_name;
+    size_t cpy = id;
+    for(size_t i =0; i < users->size;++i){
+        user* u = users->users[i];
+        if(cpy == u->user_id)
+            return strdup(u->name);
+    }
+    return NULL;
 }
 
 char*   get_user_pass(user *user)

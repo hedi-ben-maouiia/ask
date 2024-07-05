@@ -7,6 +7,7 @@ typedef struct {
     int from_user_id;
     int to_user_id;
     int is_thread;
+    int is_anony;
     char* questino_text;
     char* answer;
 } question;
@@ -14,7 +15,7 @@ typedef struct {
 #include "ask.h"
 
 void question_init(question* q,vector* splited_line);
-void print_question(question* q,vector* questions);
+void print_question(question* q,vector*users,vector* questions);
 void update_questions(question *q);
 void rewrite_question_to_data_base(vector* questions);
 

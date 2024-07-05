@@ -34,11 +34,11 @@ char*   user_to_string(user *user);
 void    user_init(user* user,vector *v);
 void    print_user(user *user);
 size_t  get_user_id(user *user);
-char*   get_user_name(user *user);
+char*   get_user_name(vector *users,int id);
 char*   get_user_pass(user *user);
 void    update_users(user* user);
 int     used_user_name(char* u,vector*users);
-int     find_user_id(int id,vector *users);
+int     allow_anonymous(int id,vector *users);
 void    input(char* data,size_t *size);
 void    clean_buffer(void);
 

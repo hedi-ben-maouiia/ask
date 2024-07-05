@@ -55,15 +55,18 @@ void ask_system(user* cur_user,
     append(menu,"View All Users");
     append(menu,"Show Feed");
     append(menu,"Logout.");
-    int exit = 0;
-    while(!exit){
+
+    while(1){
         int choice = 0;
         choice = show_menu(menu);
         switch(choice){
             case 1:
+                load_data(users,questions,users_line,questions_line,splited_line);
+                print_question_to_me(cur_user,users,questions);
                 break;
             case 2:
-                show_quesion_for_me(cur_user, users,questions,users_line,questions_line,splited_line);
+                load_data(users,questions,users_line,questions_line,splited_line);
+                print_question_from_me(cur_user, users,questions);
                 break;
             case 3:
                 ask_question(cur_user,users,questions);
@@ -72,18 +75,19 @@ void ask_system(user* cur_user,
                 answer_question(cur_user,questions);
                 break;
             case 5:
-                
+                // TODO : DELETE A QUESTION
             case 6:
+                load_data(users,questions,users_line,questions_line,splited_line);
                 print_users(users);
                 break;
             case 7:
-                show_feed(users,questions, users_line, questions_line, splited_line); 
+                load_data(users,questions,users_line,questions_line,splited_line);
+                show_feed(questions,users); 
                 break;
             case 8:
                 ask_system(cur_user, users, questions,users_line,questions_line,splited_line);
         }
     }
-
     free(menu->users);
     free(menu);
 }

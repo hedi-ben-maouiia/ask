@@ -1,6 +1,6 @@
-134,34,50,-1,how are you,gut danke!
-135,60,50,134,wie geht's dir?, 
-136,60,50,135,what better c or C++?,i think c is better:)
-137,50,60,-1,what is your name ?, 
-144,60,50,134,any advice?,
-145,34,59,-1,Are you okey?, 
+2,60,34,-1,-1,How are you?, 
+3,60,61,-1,1,wie get's dir?, 
+4,51,60,-1,1,Hey yasmin can you talk to me?,yes of course we can:)
+5,51,34,2,1,are you man?, 
+6,51,34,2,1,are you CRAZYYY?, 
+7,51,60,3,-1,Do you speak germen?,Not really :(

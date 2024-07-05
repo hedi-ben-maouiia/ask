@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 
+
 void check_malloc_fail(void *p)
 {
     if(p == NULL)
@@ -95,12 +96,15 @@ void print_users(vector*users)
     for(size_t i = 0; i < users->size; ++i)
         print_user((user*)users->users[i]);
 }
-void print_questions(vector* questions)
+void show_feed(vector* questions,vector* users)
 {
+    if(questions->size == 0){
+        printf("Empty feed.\n");
+        return;
+    }
     for(size_t i = 0; i < questions->size;++i){
         question *q = questions->users[i];
-        if(q->is_thread == -1)
-            print_question(q,questions);
+        print_question(q,users,questions);
     }
 }
 
@@ -109,33 +113,67 @@ int get_question_id(question *last_question)
    return last_question->question_id; 
 }
 
+int valid_question_id(vector *questions,int is_thread )
+{
+    for(size_t i=0;i<questions->size;++i){
+        question *q = questions->users[i];
+        if(is_thread == q->question_id)
+            return 1;
+    }
+    return 0;
+}
+
 void ask_question(user *cur_user,vector* users,vector *questions){
     int to_user_id = 0;
     question *new_question;
-    printf("Enter user ID or -1 to cancel: ");
+    printf("\nEnter user ID or -1 to cancel: ");
     scanf("%d",&to_user_id);
     if(to_user_id == -1)
         return;
-    
-    if(find_user_id(to_user_id,users) == 1)
-        printf("This user allow anonymos questions.\n");
+    if((size_t)to_user_id == cur_user->user_id){
+        printf("\nYou can't ask yourself!:(\n");
+        return;
+    }
+     
+    int allow_anon = allow_anonymous(to_user_id,users) ; 
+    if(allow_anon == 0){
+        printf("\nThe ID of user Not found in the system\nTry Again!\n");
+        return;
+    }
+    else if(allow_anon == 1){
+        printf("\nThis user allow AQ!\n");
+    }
     else 
-        printf("This user does not allow anonymos questinos.\n");
+        printf("\nThis user does not allow AQ!\n");
 
     new_question = malloc(sizeof(question));
     new_question->to_user_id = to_user_id; 
-    printf("For thread question enter the question ID or -1 for new question: ");
+    printf("\nFor thread question enter the QuestionID or -1 for new question: ");
     int is_thread = 0;
     scanf("%d",&is_thread);
-    
+    if(!valid_question_id(questions,is_thread) && is_thread != -1)
+    {
+        printf("\nThe ID of question Not found in the system\nTry again!\n");
+        return;
+    }
     new_question->is_thread = is_thread;
-    clean_buffer();
-    printf("Enter question text: ");
-    size_t buffer_size = 100;
+    clean_buffer(); 
+    
+    
+    if(allow_anon == 1){
+        printf("\nEnter -1 for AQ! or 1 for normale Question: ");
+        scanf("%d",&new_question->is_anony);
+        clean_buffer();
+    }
+    else {
+        new_question->is_anony = 1;
+    }
+    
+    size_t buffer_size = 100; 
     char* q_text = malloc(sizeof(char) * buffer_size);
-
+    
+    printf("\nEnter question text: ");
     input(q_text, &buffer_size);
-
     new_question->questino_text = strdup(q_text);
     free(q_text);
 
@@ -151,10 +189,7 @@ void ask_question(user *cur_user,vector* users,vector *questions){
     new_question->answer = " ";
     update_questions(new_question); 
 }
-void print_question_from_me(user *cur_user,vector *questions)
-{
-    // TODO: get all cur_users questions in one place
-}
+
 int hase_answer(vector* questions,int *id)
 {
     for(size_t i = 0; i < questions->size;++i ){
@@ -171,7 +206,7 @@ int hase_answer(vector* questions,int *id)
 void answer_question(user *cur_user,vector *questions)
 {
     int id = 0;
-    printf("Enter the Question ID: ");
+    printf("\nEnter the Question ID: ");
     scanf("%d",&id);
     int hase_ans = hase_answer(questions,&id) ; 
     question *q = questions->users[id];
@@ -182,7 +217,7 @@ void answer_question(user *cur_user,vector *questions)
     if(hase_ans == 1){
         int choice = -1;
         printf("You already answer This question!\n");
-        printf("Enter 1 to edite the answer or -1 to return : ");
+        printf("\nEnter 1 to edite the answer or -1 to return : ");
         scanf("%d",&choice);
         if(choice == -1)
             return;
@@ -190,7 +225,7 @@ void answer_question(user *cur_user,vector *questions)
             clean_buffer();
             size_t buffer_size = 100;
             char* answer = malloc(sizeof(char) * buffer_size);
-            printf("Enter the answer text: ");
+            printf("\nEnter the answer text: ");
             input(answer,&buffer_size);
             question * updated = questions->users[id];
             updated->answer = strdup(answer);
@@ -202,7 +237,7 @@ void answer_question(user *cur_user,vector *questions)
             clean_buffer();
             size_t buffer_size = 100;
             char* answer = malloc(sizeof(char) * buffer_size);
-            printf("Enter the answer text: ");
+            printf("\nEnter the answer text: ");
             input(answer,&buffer_size);
             question * updated = questions->users[id];
             updated->answer = strdup(answer);  
@@ -210,42 +245,63 @@ void answer_question(user *cur_user,vector *questions)
             free(answer);     
     }
     else {
-        printf("Question does not exist!\n");
+        printf("\nQuestion does not exist!\n\n");
         return;
     }
 }
-void print_from(user *cur_user,vector* questions)
+
+void print_question_from_me(user *cur_user,vector* users,vector* questions)
 {
    int no_question_from_me = 1;
    for(size_t i = 0; i < questions->size;++i){
         question *q = questions->users[i];
-        if(q->from_user_id == cur_user->user_id)
+        if((size_t)q->from_user_id == cur_user->user_id)
         {
-            no_question_from_me = 0;
-            print_question(q,questions);
+            no_question_from_me = 0;  
+            printf("QuestionID[%d]",q->question_id); 
+            if(q->is_anony == -1){
+                printf("AQ! ");
+            }
+            else{
+                printf("From UserName[%s] with UserID[%d] ",get_user_name(users,q->from_user_id),q->from_user_id);
+            }
+            printf("To UserName[%s] with ID[%d]:\n\tQuestion:%s\tAnswer:",get_user_name(users,q->from_user_id),q->to_user_id,q->questino_text);
+            if(strcmp(q->answer," ")==0)
+                printf("No answer yet!\n\n");
+            else
+                printf("%s\n\n",q->answer);
         }
     }
     if(no_question_from_me)
-        printf("You don't have any questions from you!:(\n");
-}
-void show_quesion_for_me(user *cur_user,vector *users,
-               vector *questions,
-               vector *users_line,
-               vector *questions_line,
-               vector *splited_string)
-{
-    load_data(users,questions,users_line,questions_line,splited_string);
-    print_from(cur_user,questions);
-}
-void show_feed(vector *users,
-               vector *questions,
-               vector *users_line,
-               vector *questions_line,
-               vector *splited_string)
-{
-    load_data(users,questions,users_line,questions_line,splited_string);
-    print_questions(questions);
+        printf("You don't have any question for now!:(\n\n");
+
 }
 
+void print_question_to_me(user *cur_user,vector* users,vector* questions)
+{
+   int no_question_to_me = 1;
+   for(size_t i = 0; i < questions->size;++i){
+        question *q = questions->users[i];
+        if((size_t)q->to_user_id == cur_user->user_id)
+        {
+            no_question_to_me = 0; 
+            printf("QuestionID[%d]",q->question_id); 
+            if(q->is_anony == -1){
+                printf("AQ! ");
+            }
+            else{
+                printf("From UserName[%s] with UserID[%d] ",get_user_name(users,q->from_user_id),q->from_user_id);
+            }
+            printf("To UserName[%s] with ID[%d]:\n\tQuestion:%s\tAnswer:",get_user_name(users,q->to_user_id),q->to_user_id,q->questino_text);
+            if(strcmp(q->answer," ")==0)
+                printf("No answer yet!\n\n");
+            else
+                printf("%s\n\n",q->answer);
+        }
+    }
+    if(no_question_to_me)
+        printf("You don't have any question for now!:(\n\n");
+
+}
 
 

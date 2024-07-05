@@ -7,7 +7,7 @@
 //write string to file 
 size_t show_menu(vector* content)
 {
-    printf("Menu: \n");
+    printf("\nMenu: \n");
     for(size_t i=0; i < content->size; ++i){
         printf("\t\t%zu) %s.\n",i+1,(char*)content->users[i]);
     }
